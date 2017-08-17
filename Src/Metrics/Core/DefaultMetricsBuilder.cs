@@ -1,7 +1,7 @@
 ﻿
 using System;
 using Metrics.MetricData;
-using Metrics.PerfCounters;
+
 using Metrics.Sampling;
 namespace Metrics.Core
 {
@@ -9,7 +9,7 @@ namespace Metrics.Core
     {
         public MetricValueProvider<double> BuildPerformanceCounter(string name, Unit unit, string counterCategory, string counterName, string counterInstance)
         {
-            return new PerformanceCounterGauge(counterCategory, counterName, counterInstance);
+            throw new NotSupportedException("Performance counter not supported in .NET core compilation");
         }
 
         public MetricValueProvider<double> BuildGauge(string name, Unit unit, Func<double> valueProvider)
