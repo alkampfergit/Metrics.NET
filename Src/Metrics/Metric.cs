@@ -17,9 +17,9 @@ namespace Metrics
 
         private static readonly DefaultMetricsContext globalContext;
         private static readonly MetricsConfig config;
-        
+
         internal static readonly MetricsContext Internal = new DefaultMetricsContext("Metrics.NET");
-        
+
         static Metric()
         {
             globalContext = new DefaultMetricsContext(GetGlobalContextName());
@@ -86,21 +86,6 @@ namespace Metrics
         /// </code>
         /// </example>
         public static MetricsConfig Config { get { return config; } }
-
-        /// <summary>
-        /// Register a performance counter as a Gauge metric.
-        /// </summary>
-        /// <param name="name">Name of this gauge metric. Must be unique across all gauges in this context.</param>
-        /// <param name="counterCategory">Category of the performance counter</param>
-        /// <param name="counterName">Name of the performance counter</param>
-        /// <param name="counterInstance">Instance of the performance counter</param>
-        /// <param name="unit">Description of want the value represents ( Unit.Requests , Unit.Items etc ) .</param>
-        /// <param name="tags">Optional set of tags that can be associated with the metric.</param>
-        /// <returns>Reference to the gauge</returns>
-        public static void PerformanceCounter(string name, string counterCategory, string counterName, string counterInstance, Unit unit, MetricTags tags = default(MetricTags))
-        {
-            globalContext.PerformanceCounter(name, counterCategory, counterName, counterInstance, unit, tags);
-        }
 
         /// <summary>
         /// A gauge is the simplest metric type. It just returns a value. This metric is suitable for instantaneous values.
@@ -190,7 +175,7 @@ namespace Metrics
             {
                 const string contextNameKey = "Metrics.GlobalContextName";
                 // look in the runtime environment first, then in ConfigurationManager.AppSettings
-                var contextNameValue = Environment.GetEnvironmentVariable(contextNameKey) ?? ConfigurationManager.AppSettings[contextNameKey];
+                var contextNameValue = Environment.GetEnvironmentVariable(contextNameKey);
                 var name = string.IsNullOrEmpty(contextNameValue) ? GetDefaultGlobalContextName() : ParseGlobalContextName(contextNameValue);
                 log.Debug(() => "Metrics: GlobalContext Name set to " + name);
                 return name;
@@ -244,14 +229,14 @@ namespace Metrics
 
                 if (string.IsNullOrWhiteSpace(val))
                 {
-                    // next look in ConfigurationManager.AppSettings
-                    val = ConfigurationManager.AppSettings[key.Value];
-                    if (string.IsNullOrWhiteSpace(val))
-                    {
-                        var msg = $"Metrics: Error substituting Environment tokens in Metrics.GlobalContextName. Found key '{key}' has no value in Environment or AppSettings. Original string {configName}";
-                        log.Error(msg);
-                        throw new InvalidOperationException(msg);
-                    }
+                    //// next look in ConfigurationManager.AppSettings
+                    //val = ConfigurationManager.AppSettings[key.Value];
+                    //if (string.IsNullOrWhiteSpace(val))
+                    //{
+                    var msg = $"Metrics: Error substituting Environment tokens in Metrics.GlobalContextName. Found key '{key}' has no value in Environment or AppSettings. Original string {configName}";
+                    log.Error(msg);
+                    throw new InvalidOperationException(msg);
+                    //}
                 }
 
                 configName = configName.Replace(match.Value, val);

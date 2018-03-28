@@ -317,7 +317,7 @@ namespace Metrics
         {
             try
             {
-                var httpEndpoint = ConfigurationManager.AppSettings["Metrics.HttpListener.HttpUriPrefix"];
+                String httpEndpoint = null; // ConfigurationManager.AppSettings["Metrics.HttpListener.HttpUriPrefix"];
                 if (!string.IsNullOrEmpty(httpEndpoint))
                 {
                     WithHttpEndpoint(httpEndpoint);
@@ -334,8 +334,8 @@ namespace Metrics
         {
             try
             {
-                var csvMetricsPath = ConfigurationManager.AppSettings["Metrics.CSV.Path"];
-                var csvMetricsInterval = ConfigurationManager.AppSettings["Metrics.CSV.Interval.Seconds"];
+                string csvMetricsPath = null; // ConfigurationManager.AppSettings["Metrics.CSV.Path"];
+                string csvMetricsInterval = null; // ConfigurationManager.AppSettings["Metrics.CSV.Interval.Seconds"];
 
                 if (!string.IsNullOrEmpty(csvMetricsPath) && !string.IsNullOrEmpty(csvMetricsInterval))
                 {
@@ -357,7 +357,7 @@ namespace Metrics
         {
             try
             {
-                var isDisabled = ConfigurationManager.AppSettings["Metrics.CompletelyDisableMetrics"];
+                var isDisabled = "false"; // ConfigurationManager.AppSettings["Metrics.CompletelyDisableMetrics"];
                 return !string.IsNullOrEmpty(isDisabled) && isDisabled.Equals("TRUE", StringComparison.OrdinalIgnoreCase);
             }
             catch (Exception x)

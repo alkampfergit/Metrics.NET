@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Metrics", "Src\Metrics\Metrics.csproj", "{95E29D40-DBEC-49E2-9CC5-26B88966DADE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Metrics", "Src\Metrics\Metrics.csproj", "{95E29D40-DBEC-49E2-9CC5-26B88966DADE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Metrics.Tests", "Src\Metrics.Tests\Metrics.Tests.csproj", "{4E0F8CB9-6919-48B8-8212-BCE75D04E0D9}"
 EndProject

@@ -84,7 +84,7 @@ namespace Metrics.Reports
         private static int ReadToleratedFailuresConfig()
         {
             const string configKey = "Metrics.Reports.ToleratedConsecutiveFailures";
-            var configValue = ConfigurationManager.AppSettings[configKey];
+            String configValue = null; // ConfigurationManager.AppSettings[configKey];
 
             if (configValue == null)
             {
