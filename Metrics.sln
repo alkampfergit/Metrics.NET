@@ -55,7 +55,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NancyFx.Sample", "Samples\N
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Owin.Sample", "Samples\Owin.Sample\Owin.Sample.csproj", "{828188F9-26C2-4C93-A156-D9EA13D7E2FA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Owin.Metrics", "Src\Adapters\Owin.Metrics\Owin.Metrics.csproj", "{025CD6D0-1A1E-4B14-A7DB-AF5DFF887210}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Owin.Metrics", "Src\Adapters\Owin.Metrics\Owin.Metrics.csproj", "{025CD6D0-1A1E-4B14-A7DB-AF5DFF887210}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{2E004760-A644-4312-8489-6057B8B7554A}"
 EndProject
