@@ -83,22 +83,23 @@ namespace Metrics.Reports
 
         private static int ReadToleratedFailuresConfig()
         {
-            throw new NotSupportedException("not supported in .NET CORE");
-            //const string configKey = "Metrics.Reports.ToleratedConsecutiveFailures";
-            //var configValue = ConfigurationManager.AppSettings[configKey];
+            const string configKey = "Metrics.Reports.ToleratedConsecutiveFailures";
+            String configValue = null;
+#if NETFULL
+            configValue = ConfigurationManager.AppSettings[configKey];
+#endif
+            if (configValue == null)
+            {
+                return 0;
+            }
 
-            //if (configValue == null)
-            //{
-            //    return 0;
-            //}
+            int toleratedConsecutiveFailures;
+            if (!int.TryParse(configValue, out toleratedConsecutiveFailures) || toleratedConsecutiveFailures < -1)
+            {
+                throw new InvalidOperationException($"Invalid Metrics Configuration for {configKey}: \"{configValue}\". Value must be an integer >= -1.");
+            }
 
-            //int toleratedConsecutiveFailures;
-            //if (!int.TryParse(configValue, out toleratedConsecutiveFailures) || toleratedConsecutiveFailures < -1)
-            //{
-            //    throw new InvalidOperationException($"Invalid Metrics Configuration for {configKey}: \"{configValue}\". Value must be an integer >= -1.");
-            //}
-
-            //return toleratedConsecutiveFailures;
+            return toleratedConsecutiveFailures;
         }
     }
 }

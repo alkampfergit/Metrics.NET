@@ -312,13 +312,17 @@ namespace Metrics
         {
             try
             {
-                throw new NotSupportedException("not supported in .NET CORE");
-                //var httpEndpoint = ConfigurationManager.AppSettings["Metrics.HttpListener.HttpUriPrefix"];
-                //if (!string.IsNullOrEmpty(httpEndpoint))
-                //{
-                //    WithHttpEndpoint(httpEndpoint);
-                //    log.Debug(() => "Metrics: HttpListener configured at " + httpEndpoint);
-                //}
+                String httpEndpoint;
+#if NETFULL
+                httpEndpoint = System.Configuration.ConfigurationManager.AppSettings["Metrics.HttpListener.HttpUriPrefix"];
+#else
+                httpEndpoint = null;
+#endif
+                if (!string.IsNullOrEmpty(httpEndpoint))
+                {
+                    WithHttpEndpoint(httpEndpoint);
+                    log.Debug(() => "Metrics: HttpListener configured at " + httpEndpoint);
+                }
             }
             catch (Exception x)
             {
@@ -330,19 +334,21 @@ namespace Metrics
         {
             try
             {
-                throw new NotSupportedException("not supported in .NET CORE");
-                //var csvMetricsPath = ConfigurationManager.AppSettings["Metrics.CSV.Path"];
-                //var csvMetricsInterval = ConfigurationManager.AppSettings["Metrics.CSV.Interval.Seconds"];
-
-                //if (!string.IsNullOrEmpty(csvMetricsPath) && !string.IsNullOrEmpty(csvMetricsInterval))
-                //{
-                //    int seconds;
-                //    if (int.TryParse(csvMetricsInterval, out seconds) && seconds > 0)
-                //    {
-                //        WithReporting(r => r.WithCSVReports(csvMetricsPath, TimeSpan.FromSeconds(seconds)));
-                //        log.Debug($"Metrics: Storing CSV reports in {csvMetricsPath} every {seconds} seconds.");
-                //    }
-                //}
+                String csvMetricsPath = null;
+                String csvMetricsInterval = null;
+#if NETFULL
+                 csvMetricsPath = ConfigurationManager.AppSettings["Metrics.CSV.Path"];
+                 csvMetricsInterval = ConfigurationManager.AppSettings["Metrics.CSV.Interval.Seconds"];
+#endif
+                if (!string.IsNullOrEmpty(csvMetricsPath) && !string.IsNullOrEmpty(csvMetricsInterval))
+                {
+                    int seconds;
+                    if (int.TryParse(csvMetricsInterval, out seconds) && seconds > 0)
+                    {
+                        WithReporting(r => r.WithCSVReports(csvMetricsPath, TimeSpan.FromSeconds(seconds)));
+                        log.Debug($"Metrics: Storing CSV reports in {csvMetricsPath} every {seconds} seconds.");
+                    }
+                }
             }
             catch (Exception x)
             {
@@ -354,9 +360,11 @@ namespace Metrics
         {
             try
             {
-                throw new NotSupportedException("not supported in .NET CORE");
-                //var isDisabled = ConfigurationManager.AppSettings["Metrics.CompletelyDisableMetrics"];
-                //return !string.IsNullOrEmpty(isDisabled) && isDisabled.Equals("TRUE", StringComparison.OrdinalIgnoreCase);
+                String isDisabled = null;
+#if NETFULL
+                isDisabled = System.Configuration.ConfigurationManager.AppSettings["Metrics.CompletelyDisableMetrics"];
+#endif
+                return !string.IsNullOrEmpty(isDisabled) && isDisabled.Equals("TRUE", StringComparison.OrdinalIgnoreCase);
             }
             catch (Exception x)
             {

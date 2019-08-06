@@ -186,26 +186,25 @@ namespace Metrics
 
         private static string GetGlobalContextName()
         {
-            throw new NotSupportedException("not supported in .NET CORE");
-            //try
-            //{
-            //    const string contextNameKey = "Metrics.GlobalContextName";
-            //    // look in the runtime environment first, then in ConfigurationManager.AppSettings
-            //    var contextNameValue = Environment.GetEnvironmentVariable(contextNameKey) ?? ConfigurationManager.AppSettings[contextNameKey];
-            //    var name = string.IsNullOrEmpty(contextNameValue) ? GetDefaultGlobalContextName() : ParseGlobalContextName(contextNameValue);
-            //    log.Debug(() => "Metrics: GlobalContext Name set to " + name);
-            //    return name;
-            //}
-            //catch (InvalidOperationException)
-            //{
-            //    // these are thrown by sub functions and will already be logged.
-            //    throw;
-            //}
-            //catch (Exception x)
-            //{
-            //    log.ErrorException("Metrics: Error reading config value for Metrics.GlobalContextName", x);
-            //    throw new InvalidOperationException("Invalid Metrics Configuration: Metrics.GlobalContextName must be non empty string", x);
-            //}
+            try
+            {
+                const string contextNameKey = "Metrics.GlobalContextName";
+                // look in the runtime environment first, then in ConfigurationManager.AppSettings
+                var contextNameValue = Environment.GetEnvironmentVariable(contextNameKey);
+                var name = string.IsNullOrEmpty(contextNameValue) ? GetDefaultGlobalContextName() : ParseGlobalContextName(contextNameValue);
+                log.Debug(() => "Metrics: GlobalContext Name set to " + name);
+                return name;
+            }
+            catch (InvalidOperationException)
+            {
+                // these are thrown by sub functions and will already be logged.
+                throw;
+            }
+            catch (Exception x)
+            {
+                log.ErrorException("Metrics: Error reading config value for Metrics.GlobalContextName", x);
+                throw new InvalidOperationException("Invalid Metrics Configuration: Metrics.GlobalContextName must be non empty string", x);
+            }
         }
 
         private static string ParseGlobalContextName(string configName)
@@ -226,40 +225,43 @@ namespace Metrics
 
         private static string ReplaceRemainingTokens(string configName)
         {
-            throw new NotSupportedException("not supported in .NET CORE");
-            //// look for any tokens of the pattern $Env.<key>$ where <key> is the name of an environment variable or AppSettings variable to read.
-            //var matches = Regex.Matches(configName, @"\$Env\.(.+?)\$", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
-            //foreach (var match in matches.Cast<Match>())
-            //{
-            //    // we have a match. The second group is the key to look for.
-            //    var key = match.Groups[1];
+            // look for any tokens of the pattern $Env.<key>$ where <key> is the name of an environment variable or AppSettings variable to read.
+            var matches = Regex.Matches(configName, @"\$Env\.(.+?)\$", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
+            foreach (var match in matches.Cast<Match>())
+            {
+                // we have a match. The second group is the key to look for.
+                var key = match.Groups[1];
 
-            //    if (string.IsNullOrWhiteSpace(key.Value))
-            //    {
-            //        var msg = $"Metrics: Error substituting Environment tokens in Metrics.GlobalContextName. Found token with no key. Original string {configName}";
-            //        log.Error(msg);
-            //        throw new InvalidOperationException(msg);
-            //    }
+                if (string.IsNullOrWhiteSpace(key.Value))
+                {
+                    var msg = $"Metrics: Error substituting Environment tokens in Metrics.GlobalContextName. Found token with no key. Original string {configName}";
+                    log.Error(msg);
+                    throw new InvalidOperationException(msg);
+                }
 
-            //    // first look in the runtime Environment.
-            //    var val = Environment.GetEnvironmentVariable(key.Value);
+                // first look in the runtime Environment.
+                var val = Environment.GetEnvironmentVariable(key.Value);
 
-            //    if (string.IsNullOrWhiteSpace(val))
-            //    {
-            //        // next look in ConfigurationManager.AppSettings
-            //        val = ConfigurationManager.AppSettings[key.Value];
-            //        if (string.IsNullOrWhiteSpace(val))
-            //        {
-            //            var msg = $"Metrics: Error substituting Environment tokens in Metrics.GlobalContextName. Found key '{key}' has no value in Environment or AppSettings. Original string {configName}";
-            //            log.Error(msg);
-            //            throw new InvalidOperationException(msg);
-            //        }
-            //    }
+                if (string.IsNullOrWhiteSpace(val))
+                {
+                    // next look in ConfigurationManager.AppSettings
+#if NETFULL
+                    val = System.Configuration.ConfigurationManager.AppSettings[key.Value];
+#else
+                    //do nothing there is no standard configured way to configure everything, need to restructure metrics.net.
+#endif
+                    if (string.IsNullOrWhiteSpace(val))
+                    {
+                        var msg = $"Metrics: Error substituting Environment tokens in Metrics.GlobalContextName. Found key '{key}' has no value in Environment or AppSettings. Original string {configName}";
+                        log.Error(msg);
+                        throw new InvalidOperationException(msg);
+                    }
+                }
 
-            //    configName = configName.Replace(match.Value, val);
-            //}
+                configName = configName.Replace(match.Value, val);
+            }
 
-            //return configName;
+            return configName;
         }
 
         private static string CleanName(string name)
